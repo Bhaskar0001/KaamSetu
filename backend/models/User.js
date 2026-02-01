@@ -65,6 +65,21 @@ const userSchema = new mongoose.Schema({
         type: String, // URL to object storage
         default: 'default.jpg',
     },
+    // Production KYC Documents
+    documents: {
+        aadhaarFront: String, // URL to uploaded file
+        aadhaarBack: String,
+        selfie: String,
+    },
+    verification: {
+        status: {
+            type: String,
+            enum: ['PENDING', 'VERIFIED', 'REJECTED', 'NONE'],
+            default: 'NONE'
+        },
+        faceMatchScore: { type: Number, default: 0 }, // 0-100 confidence
+        verifiedAt: Date
+    },
     // Thekedar specific: Pool of workers
     myWorkers: [{
         type: mongoose.Schema.Types.ObjectId,

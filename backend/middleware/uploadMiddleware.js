@@ -1,41 +1,43 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
-// Set storage engine
+// Ensure upload directory exists
+const uploadDir = 'uploads/';
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/');
     },
     filename: function (req, file, cb) {
-        cb(
-            null,
-            file.fieldname + '-' + Date.now() + path.extname(file.originalname)
-        );
-    },
+        // Secure filename: FieldName + UserID + Timestamp + Ext
+        // Note: req.user should be populated by protect middleware
+        if (!req.user) return cb(new Error('Unauthorized Upload'), '');
+
+        const ext = path.extname(file.originalname);
+        const uniqueSuffix = req.user.id + '-' + Date.now() + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+    }
 });
 
-// Check file type
-function checkFileType(file, cb) {
-    const filetypes = /jpeg|jpg|png|gif/;
-    const extname = filetypes.test(
-        path.extname(file.originalname).toLowerCase()
-    );
-    const mimetype = filetypes.test(file.mimetype);
-
-    if (mimetype && extname) {
-        return cb(null, true);
+const fileFilter = (req, file, cb) => {
+    // Keep production secure: Only Images
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
     } else {
-        cb('Error: Images Only!');
+        cb(new Error('Not an image! Please upload only JPG/PNG files.'), false);
     }
-}
+};
 
-// Init upload
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5000000 }, // 5MB
-    fileFilter: function (req, file, cb) {
-        checkFileType(file, cb);
-    },
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 5 // 5MB Limit
+    }
 });
 
 module.exports = upload;

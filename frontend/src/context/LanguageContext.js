@@ -4,7 +4,7 @@ import { translations } from '../utils/translations';
 const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
-    const [language, setLanguage] = useState('en');
+    const [language, setLanguage] = useState('hi');
 
     useEffect(() => {
         const savedLang = localStorage.getItem('language');

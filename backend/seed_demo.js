@@ -33,6 +33,34 @@ async function seed() {
             }
         }
 
+        // --- Create Dummy Jobs for Feed ---
+        // Find owner
+        const owner = await User.findOne({ role: 'owner' });
+        const jobTitles = ['Painter Needed', 'Mason for Wall', 'Electrician', 'Helper Required', 'Plumber Urgent'];
+        const locations = [
+            { address: 'Delhi, India', lat: 28.7041, lng: 77.1025 },
+            { address: 'Mumbai, India', lat: 19.0760, lng: 72.8777 },
+            { address: 'Bangalore, India', lat: 12.9716, lng: 77.5946 }
+        ];
+
+        const Job = require('./models/Job');
+        await Job.deleteMany({}); // Clear old jobs
+
+        for (let i = 0; i < 5; i++) {
+            await Job.create({
+                postedBy: owner._id,
+                title: jobTitles[i],
+                description: `Need experienced ${jobTitles[i]} for a 3-day project. Good pay.`,
+                wage: 500 + (i * 100),
+                jobType: i % 2 === 0 ? 'direct' : 'bid',
+                location: locations[i % 3],
+                requiredSkills: ['General'],
+                date: new Date(),
+                status: 'open'
+            });
+        }
+        console.log('✅ Created 5 Dummy Jobs');
+
         console.log('\n✅ Demo users seeded successfully!');
         console.log('\nCredentials:');
         console.log('  Worker: DEMO_WORKER / 1234');

@@ -16,6 +16,7 @@ import CreateJob from './pages/CreateJob';
 import MarkAttendance from './pages/MarkAttendance';
 import WalletPage from './pages/WalletPage';
 import ContractPage from './pages/ContractPage';
+import KYCVerification from './pages/KYCVerification';
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
@@ -49,6 +50,7 @@ function HomeRedirect() {
 function App() {
   return (
     <LanguageProvider>
+
       <Router>
         <Routes>
           {/* Public Routes */}
@@ -112,6 +114,12 @@ function App() {
           <Route path='/profile' element={
             <ProtectedRoute>
               <WorkerProfile />
+            </ProtectedRoute>
+          } />
+
+          <Route path='/kyc' element={
+            <ProtectedRoute>
+              <KYCVerification />
             </ProtectedRoute>
           } />
 

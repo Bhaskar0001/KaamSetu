@@ -12,8 +12,10 @@ exports.placeBid = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Job not found' });
         }
 
+        // In production, 'direct' might mean instant acceptance at posted wage.
+        // For now, we treat it as an application/bid at the posted wage.
         if (job.jobType === 'direct') {
-            return res.status(400).json({ success: false, message: 'Cannot bid on direct hire jobs' });
+            req.body.amount = job.wage; // Enforce fixed wage
         }
 
         const bid = await Bid.create({

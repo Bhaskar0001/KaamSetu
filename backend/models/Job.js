@@ -47,7 +47,8 @@ const jobSchema = new mongoose.Schema({
     },
 });
 
-// Create index for search
+// Create index for search and location
 jobSchema.index({ title: 'text', description: 'text' });
+jobSchema.index({ location: '2dsphere' }); // For geospatial queries ($near)
 
 module.exports = mongoose.model('Job', jobSchema);

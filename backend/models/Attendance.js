@@ -41,6 +41,14 @@ const attendanceSchema = new mongoose.Schema({
         enum: ['manual', 'face_geo', 'voice', 'offline_sync'],
         default: 'manual'
     },
+    workHours: {
+        type: Number,
+        default: 8
+    },
+    overtimeHours: {
+        type: Number,
+        default: 0
+    },
     isSynced: {
         type: Boolean,
         default: true, // If coming from online API directly

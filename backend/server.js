@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
+const path = require('path');
 const connectDB = require('./config/db');
 
 // Load env vars
@@ -45,6 +46,8 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve uploaded files
+
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
@@ -56,10 +59,14 @@ app.use('/api/contracts', require('./routes/contractRoutes'));
 app.use('/api/payments', require('./routes/paymentRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/thekedar', require('./routes/thekedarRoutes'));
+app.use('/api/sites', require('./routes/siteRoutes'));
+app.use('/api/v5', require('./routes/v5Routes'));
+app.use('/api/vault', require('./routes/vaultRoutes'));
+app.use('/api/bulk', require('./routes/bulkRoutes'));
+app.use('/api/payroll', require('./routes/payrollRoutes'));
 
-// Make uploads folder static
-const path = require('path');
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+// Make uploads folder static (Already done above)
+// app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.get('/', (req, res) => {
     res.send('Labour Platform API is running...');

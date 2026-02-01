@@ -1,152 +1,184 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import Skeleton from '../components/Skeleton';
+import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import { useNavigate } from 'react-router-dom';
+import { Wallet, ArrowUpRight, ArrowDownLeft, Clock, CreditCard, Shield, ArrowLeft } from 'lucide-react';
 
 function WalletPage() {
-    const [wallet, setWallet] = useState(null);
-    const [transactions, setTransactions] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const [addFundsAmount, setAddFundsAmount] = useState('');
-    const [isAddingFunds, setIsAddingFunds] = useState(false);
+    const { t } = useLanguage();
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchWallet();
+    // Dummy Data for Preview (as requested "add some dummy data")
+    const [transactions, setTransactions] = useState([
+        { id: 1, type: 'credit', amount: 500, title: 'Trip Payment', date: '2024-03-10', status: 'success' },
+        { id: 2, type: 'debit', amount: 200, title: 'Withdrawal', date: '2024-03-08', status: 'success' },
+        { id: 3, type: 'credit', amount: 1500, title: 'Weekly Bonus', date: '2024-03-05', status: 'success' },
+        { id: 4, type: 'debit', amount: 50, title: 'Platform Fee', date: '2024-03-01', status: 'success' },
+    ]);
+
+    const [showAddMoney, setShowAddMoney] = useState(false);
+    const [amountToAdd, setAmountToAdd] = useState('');
+    const [processing, setProcessing] = useState(false);
+    const [balance, setBalance] = useState(1850);
+
+    const handlePayment = () => {
+        if (!amountToAdd) return;
+        setProcessing(true);
+        // Simulate Gateway Delay
+        setTimeout(() => {
+            setProcessing(false);
+            setBalance(prev => prev + Number(amountToAdd));
+            setTransactions(prev => [
+                { id: Date.now(), type: 'credit', amount: Number(amountToAdd), title: 'Wallet Top-up', date: new Date().toISOString().split('T')[0], status: 'success' },
+                ...prev
+            ]);
+            setShowAddMoney(false);
+            setAmountToAdd('');
+            // toast.success('Payment Successful!'); // Needs import
+            alert('✅ Payment Successful! Money Added.'); // Fallback
+        }, 2000);
+    };
+
+    // Check offline status for UI feedback
+    React.useEffect(() => {
+        if (!navigator.onLine) {
+            // Check if we have cached wallet data (even though this page mostly uses dummy data for now)
+            // In a real app, we'd fetch transactions here.
+            // But visually, let's remind them.
+            // toast.info(t('offline_mode') || "Offline Mode: Showing cached balance");
+        }
     }, []);
 
-    const fetchWallet = async () => {
-        try {
-            const config = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
-            const res = await axios.get('http://localhost:5000/api/payments/wallet', config);
-            setWallet(res.data.data.wallet);
-            setTransactions(res.data.data.transactions || []);
-        } catch (err) {
-            setError('Failed to load wallet');
-            toast.error('Could not load wallet details');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleAddFunds = async (e) => {
-        e.preventDefault();
-        if (!addFundsAmount || Number(addFundsAmount) <= 0) {
-            toast.warning('Please enter a valid amount');
-            return;
-        }
-
-        setIsAddingFunds(true);
-        try {
-            const config = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
-            await axios.post('http://localhost:5000/api/payments/add-funds',
-                { amount: Number(addFundsAmount) },
-                config
-            );
-            toast.success('✅ Funds added successfully!');
-            setAddFundsAmount('');
-            fetchWallet();
-        } catch (err) {
-            toast.error(err.response?.data?.message || '❌ Failed to add funds');
-        } finally {
-            setIsAddingFunds(false);
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className='container'>
-                <section className='heading'>
-                    <Skeleton height="40px" width="50%" style={{ margin: '0 auto' }} />
-                </section>
-                <Skeleton height="150px" style={{ marginBottom: '20px' }} />
-                <Skeleton height="100px" />
-            </div>
-        );
-    }
-
     return (
-        <div className='container'>
-            <section className='heading'>
-                <h1>💰 My Wallet</h1>
-                <p>Manage your funds securely</p>
-            </section>
-
-            {error && <div className='error-box'>{error}</div>}
-
-            {/* Balance Card */}
-            <div className='wallet-balance'>
-                <p style={{ margin: 0, fontSize: '14px', opacity: 0.8 }}>Available Balance</p>
-                <h2>₹{wallet?.balance?.toLocaleString() || 0}</h2>
+        <div className="container" style={{ paddingBottom: '80px' }}>
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '20px 20px 0' }}>
+                <button onClick={() => navigate(-1)} style={{ background: 'white', border: 'none', padding: '10px', borderRadius: '12px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', cursor: 'pointer' }}>
+                    <ArrowLeft size={24} color='#334155' />
+                </button>
+                <h2 style={{ margin: 0, color: '#1e293b' }}>{t('wallet')} (Wallet)</h2>
             </div>
 
-            {/* Add Funds Form */}
-            <div className='card'>
-                <h3>➕ Add Funds</h3>
-                <form onSubmit={handleAddFunds} className='flex gap-md'>
-                    <input
-                        type='number'
-                        className='form-control'
-                        placeholder='Enter amount'
-                        value={addFundsAmount}
-                        onChange={(e) => setAddFundsAmount(e.target.value)}
-                        style={{ flex: 1 }}
-                    />
-                    <button type='submit' className='btn btn-success' disabled={isAddingFunds}>
-                        {isAddingFunds ? 'Adding...' : '💳 Add'}
-                    </button>
-                </form>
-            </div>
+            <div style={{ padding: '20px' }}>
+                {/* Balance Card */}
+                <div className="glass-card" style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: 'white', marginBottom: '25px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+                        <div>
+                            <p style={{ margin: 0, opacity: 0.7, fontSize: '0.9rem' }}>Total Balance</p>
+                            <h1 style={{ margin: '5px 0', fontSize: '2.5rem' }}>₹{balance.toLocaleString()}</h1>
+                        </div>
+                        <div style={{ background: 'rgba(255,255,255,0.1)', padding: '8px', borderRadius: '12px' }}>
+                            <Shield size={24} color="#4ade80" />
+                        </div>
+                    </div>
 
-            {/* Quick Add Buttons */}
-            <div className='flex gap-md mb-md' style={{ flexWrap: 'wrap' }}>
-                {[500, 1000, 2000, 5000].map((amt) => (
-                    <button
-                        key={amt}
-                        className='btn btn-outline'
-                        onClick={() => setAddFundsAmount(amt.toString())}
-                    >
-                        +₹{amt}
-                    </button>
-                ))}
-            </div>
+                    <div style={{ display: 'flex', gap: '15px' }}>
+                        <button className="btn" style={{ flex: 1, background: '#3b82f6', color: 'white', border: 'none' }} onClick={() => setShowAddMoney(true)}>
+                            <ArrowUpRight size={18} style={{ marginRight: '5px' }} /> Add Money
+                        </button>
+                        <button className="btn" style={{ flex: 1, background: 'rgba(255,255,255,0.1)', color: 'white', border: 'none' }}>
+                            <ArrowDownLeft size={18} style={{ marginRight: '5px' }} /> Withdraw
+                        </button>
+                    </div>
+                </div>
 
-            {/* Transaction History */}
-            <div className='card'>
-                <h3>📜 Transaction History</h3>
-                {transactions.length === 0 ? (
-                    <p className='text-muted'>No transactions yet</p>
-                ) : (
-                    <div>
-                        {transactions.map((txn) => (
-                            <div
-                                key={txn._id}
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    padding: '12px 0',
-                                    borderBottom: '1px solid #e2e8f0'
-                                }}
-                            >
-                                <div>
-                                    <strong>{txn.description || txn.type}</strong>
-                                    <br />
-                                    <small className='text-muted'>
-                                        {new Date(txn.createdAt).toLocaleDateString()}
-                                    </small>
-                                </div>
-                                <div style={{
+                {/* Quick Actions */}
+                <div className="grid-cards" style={{ gridTemplateColumns: '1fr 1fr', marginBottom: '25px' }}>
+                    <div className="glass-card" style={{ padding: '15px', textAlign: 'center', cursor: 'pointer' }}>
+                        <CreditCard size={28} color="#0ea5e9" style={{ marginBottom: '10px' }} />
+                        <h4 style={{ margin: 0, fontSize: '1rem' }}>UPI ID</h4>
+                        <p className="text-muted" style={{ fontSize: '0.8rem' }}>Link Bank</p>
+                    </div>
+                    <div className="glass-card" style={{ padding: '15px', textAlign: 'center', cursor: 'pointer' }}>
+                        <Clock size={28} color="#f59e0b" style={{ marginBottom: '10px' }} />
+                        <h4 style={{ margin: 0, fontSize: '1rem' }}>{t('history')}</h4>
+                        <p className="text-muted" style={{ fontSize: '0.8rem' }}>View All</p>
+                    </div>
+                </div>
+
+                {/* Recent Transactions */}
+                <h3 style={{ marginBottom: '15px' }}>{t('recent_transactions')}</h3>
+                <div className="glass-card" style={{ padding: '0' }}>
+                    {transactions.map((txn, index) => (
+                        <div key={txn.id} style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '15px 20px',
+                            borderBottom: index !== transactions.length - 1 ? '1px solid #e2e8f0' : 'none'
+                        }}>
+                            <div style={{
+                                width: '40px', height: '40px', borderRadius: '50%',
+                                background: txn.type === 'credit' ? '#dcfce7' : '#fee2e2',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                marginRight: '15px'
+                            }}>
+                                {txn.type === 'credit' ? <ArrowDownLeft size={20} color="#16a34a" /> : <ArrowUpRight size={20} color="#dc2626" />}
+                            </div>
+                            <div style={{ flex: 1 }}>
+                                <h4 style={{ margin: 0, fontSize: '1rem' }}>{txn.title}</h4>
+                                <p className="text-muted" style={{ margin: 0, fontSize: '0.8rem' }}>{txn.date}</p>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                                <span style={{
+                                    display: 'block',
                                     fontWeight: 'bold',
                                     color: txn.type === 'credit' ? '#16a34a' : '#dc2626'
                                 }}>
                                     {txn.type === 'credit' ? '+' : '-'}₹{txn.amount}
-                                </div>
+                                </span>
+                                <span className="badge badge-success" style={{ fontSize: '0.7rem', padding: '2px 6px' }}>{txn.status}</span>
                             </div>
-                        ))}
-                    </div>
-                )}
+                        </div>
+                    ))}
+                </div>
             </div>
+
+            {/* Add Money Modal */}
+            {showAddMoney && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                    background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(5px)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+                }}>
+                    <div className="glass-card" style={{ width: '90%', maxWidth: '400px', background: 'white', color: '#333' }}>
+                        <h3 style={{ marginBottom: '20px' }}>Add Money to Wallet</h3>
+
+                        {!processing ? (
+                            <>
+                                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '10px' }}>Enter Amount (₹)</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={amountToAdd}
+                                    onChange={e => setAmountToAdd(e.target.value)}
+                                    placeholder="e.g. 500"
+                                    style={{ fontSize: '1.5rem', marginBottom: '20px' }}
+                                />
+
+                                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '10px' }}>Select Payment Method</label>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '20px' }}>
+                                    <button className="btn btn-outline" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px' }}>
+                                        <span style={{ fontSize: '1.5rem' }}>📱</span> UPI
+                                    </button>
+                                    <button className="btn btn-outline" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px' }}>
+                                        <span style={{ fontSize: '1.5rem' }}>💳</span> Card
+                                    </button>
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <button className="btn" style={{ flex: 1, background: '#e2e8f0' }} onClick={() => setShowAddMoney(false)}>Cancel</button>
+                                    <button className="btn btn-success" style={{ flex: 1 }} onClick={handlePayment}>Pay ₹{amountToAdd || 0}</button>
+                                </div>
+                            </>
+                        ) : (
+                            <div style={{ textAlign: 'center', padding: '20px' }}>
+                                <div className="spinner" style={{ margin: '0 auto 20px' }}></div>
+                                <h4>Processing Secure Payment...</h4>
+                                <p className="text-muted">Connecting to Bank Gateway...</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
