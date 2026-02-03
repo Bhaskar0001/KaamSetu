@@ -41,7 +41,8 @@ exports.getMyJobs = async (req, res) => {
 // @access  Private
 exports.getJobFeed = async (req, res) => {
     try {
-        // In future, filtering by location/skills happens here.
+        // TODO: Elasticsearch integration needed here once we hit 10k jobs. 
+        // For now, simple Mongo find is "good enough".
         const jobs = await Job.find({ status: 'open' }).populate('postedBy', 'name companyName');
         res.status(200).json({ success: true, data: jobs });
     } catch (err) {
@@ -63,7 +64,7 @@ exports.searchJobs = async (req, res) => {
 
         const jobs = await Job.find(query)
             .populate('postedBy', 'name companyName')
-            .sort({ score: { $meta: 'textScore' } }); // Sort by relevance
+            .sort({ score: { $meta: 'textScore' } }); // Mongo text search is surprisingly fast
 
         res.status(200).json({ success: true, count: jobs.length, data: jobs });
     } catch (err) {

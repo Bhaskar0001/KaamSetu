@@ -59,7 +59,7 @@ exports.payWorker = async (req, res) => {
         // 1. Verify Verification PIN
         const sender = await User.findById(req.user.id).select('+pin');
         const isMatch = await bcrypt.compare(pin, sender.pin);
-        if (!isMatch) return res.status(401).json({ success: false, message: 'Invalid PIN' });
+        if (!isMatch) return res.status(401).json({ success: false, message: 'Invalid PIN' }); // FIXME: Rate limit this specifically!
 
         // 2. Fetch Wallets
         const senderWallet = await getOrCreateWallet(req.user.id);
@@ -70,8 +70,9 @@ exports.payWorker = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Insufficient Balance' });
         }
 
-        // 4. Atomic Transfer (Without Transactions for now as locally no ReplicaSet)
-        // We use $inc to be atomic at document level
+        // 4. Atomic Transfer
+        // We use $inc to be atomic at document level.
+        // NOTE: If we migrate to SQL, use a proper Transaction block here.
         // Decrement Sender
         const updatedSender = await Wallet.findOneAndUpdate(
             { _id: senderWallet._id, balance: { $gte: amount } }, // Optimistic Lock
