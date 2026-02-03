@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../utils/api';
+// import api from '../utils/api'; // Unused
 import { toast } from 'react-toastify';
 import { useLanguage } from '../context/LanguageContext';
 import { saveOfflineAttendance } from '../utils/offlineQueue';
-import { MapPin, Camera, CheckCircle, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { MapPin, ArrowLeft } from 'lucide-react';
 import Webcam from 'react-webcam';
+import ActionSuccess from '../components/ActionSuccess';
 
 function MarkAttendance() {
-    const { t } = useLanguage();
+    const { t, language, changeLanguage } = useLanguage();
     const navigate = useNavigate();
     const [location, setLocation] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -78,7 +79,10 @@ function MarkAttendance() {
                 <button onClick={() => navigate(-1)} style={{ background: 'white', border: 'none', padding: '10px', borderRadius: '12px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', cursor: 'pointer' }}>
                     <ArrowLeft size={24} color='#334155' />
                 </button>
-                <h2 style={{ margin: 0, color: '#1e293b' }}>Daily Attendance</h2>
+                <h2 style={{ margin: 0, color: '#1e293b' }}>{t('daily_attendance')}</h2>
+                <button onClick={() => changeLanguage(language === 'en' ? 'hi' : 'en')} style={{ marginLeft: 'auto', background: '#e2e8f0', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
+                    {language === 'en' ? '🇮🇳 HI' : '🇺🇸 EN'}
+                </button>
             </div>
 
             {step === 1 && (
@@ -88,16 +92,16 @@ function MarkAttendance() {
                     </div>
                     {location ? (
                         <>
-                            <h3 style={{ color: '#0284c7' }}>Location Locked 📍</h3>
-                            <p className="text-muted">Accuracy: {location.accuracy?.toFixed(0)} meters</p>
+                            <h3 style={{ color: '#0284c7' }}>{t('location_locked')}</h3>
+                            <p className="text-muted">{t('accuracy')}: {location.accuracy?.toFixed(0)} {t('meters')}</p>
                             <button className="btn btn-primary btn-block" onClick={() => setStep(2)}>
-                                Next: verify Selfie
+                                {t('next_verify_selfie')}
                             </button>
                         </>
                     ) : (
                         <>
-                            <h3>Fetching Location...</h3>
-                            <p className="text-muted">Please wait while we verify your site location.</p>
+                            <h3>{t('fetching_location')}</h3>
+                            <p className="text-muted">{t('verify_site_location')}</p>
                             <div className="spinner" style={{ margin: '20px auto' }}></div>
                         </>
                     )}
@@ -106,7 +110,7 @@ function MarkAttendance() {
 
             {step === 2 && (
                 <div className="glass-card">
-                    <h3 style={{ marginBottom: '15px', textAlign: 'center' }}>Take Selfie 📸</h3>
+                    <h3 style={{ marginBottom: '15px', textAlign: 'center' }}>{t('take_selfie')}</h3>
                     <div style={{ borderRadius: '15px', overflow: 'hidden', border: '2px solid #e2e8f0', marginBottom: '20px' }}>
                         {!selfie ? (
                             <Webcam
@@ -122,31 +126,24 @@ function MarkAttendance() {
                     </div>
 
                     {!selfie ? (
-                        <button className="btn btn-primary btn-block" onClick={handleCapture}>Capture Photo</button>
+                        <button className="btn btn-primary btn-block" onClick={handleCapture}>{t('capture_photo')}</button>
                     ) : (
                         <div style={{ display: 'flex', gap: '10px' }}>
-                            <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setSelfie(null)}>Retake</button>
+                            <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setSelfie(null)}>{t('retake')}</button>
                             <button className="btn btn-success" style={{ flex: 1 }} onClick={submitAttendance} disabled={loading}>
-                                {loading ? 'Marking...' : 'Confirm ✅'}
+                                {loading ? t('marking') : t('confirm')}
                             </button>
                         </div>
                     )}
                 </div>
             )}
 
-            {step === 3 && (
-                <div className="glass-card text-center" style={{ borderTop: '5px solid #22c55e' }}>
-                    <CheckCircle size={60} color="#22c55e" style={{ marginBottom: '20px' }} />
-                    <h2 style={{ color: '#22c55e' }}>Attendance Marked!</h2>
-                    <p className="text-muted">
-                        {navigator.onLine ? 'Synced with Server' : 'Saved Offline. Will sync later.'}
-                    </p>
-                    <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{new Date().toLocaleTimeString()}</p>
-                    <button className="btn btn-primary btn-block" style={{ marginTop: '20px' }} onClick={() => navigate('/worker')}>
-                        Back to Dashboard
-                    </button>
-                </div>
-            )}
+            <ActionSuccess
+                isOpen={step === 3}
+                message={t('attendance_marked')}
+                subMessage={navigator.onLine ? t('synced_with_server') : t('saved_offline')}
+                onClose={() => navigate('/worker')}
+            />
         </div>
     );
 }

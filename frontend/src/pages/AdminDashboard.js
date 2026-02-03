@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Skeleton from '../components/Skeleton';
@@ -70,9 +70,9 @@ function AdminDashboard() {
 
             {/* Navigation */}
             <nav className='nav'>
-                <a href='/admin' className='nav-link active'>📊 Dashboard</a>
-                <a href='/admin/users' className='nav-link'>👥 Users</a>
-                <a href='/admin/fraud' className='nav-link'>🚨 Fraud Logs</a>
+                <Link to='/admin' className='nav-link active'>📊 Dashboard</Link>
+                <Link to='/admin/users' className='nav-link'>👥 Users</Link>
+                <Link to='/admin/fraud' className='nav-link'>🚨 Fraud Logs</Link>
             </nav>
 
             {/* Header */}

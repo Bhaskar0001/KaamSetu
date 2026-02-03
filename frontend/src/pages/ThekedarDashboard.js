@@ -101,8 +101,8 @@ function ThekedarDashboard() {
             <div className='premium-header'>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                        <h2 style={{ color: 'white', marginBottom: '4px' }}>Hello, {user?.name || 'Thekedar'}</h2>
-                        <span style={{ opacity: 0.8, fontSize: '0.9rem' }}>Manage your empire efficiently</span>
+                        <h2 style={{ color: 'white', marginBottom: '4px' }}>{t('hello')}, {user?.name || t('thekedar_role')}</h2>
+                        <span style={{ opacity: 0.8, fontSize: '0.9rem' }}>{t('manage_empire')}</span>
                     </div>
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <button onClick={toggleLang} className='btn' style={{ background: 'rgba(255,255,255,0.2)', color: 'white', padding: '8px 12px' }}>
@@ -161,7 +161,7 @@ function ThekedarDashboard() {
                             <div className='job-feed'>
                                 <h3>{t('available_contracts')}</h3>
                                 {loading ? <Skeleton count={3} height="100px" /> : jobs.length === 0 ? (
-                                    <div className='glass-card text-center text-muted'>No contracts available right now.</div>
+                                    <div className='glass-card text-center text-muted'>{t('no_jobs')}</div>
                                 ) : (
                                     <div className='grid-cards'>
                                         {jobs.map(job => (
@@ -174,7 +174,7 @@ function ThekedarDashboard() {
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                     <span style={{ fontSize: '0.8rem', color: '#666' }}>📍 {job.location?.address}</span>
                                                     <button className='btn btn-primary' style={{ padding: '8px 16px', fontSize: '0.9rem' }} onClick={() => handleBid(job)}>
-                                                        Place Bid
+                                                        {t('place_bid')}
                                                     </button>
                                                 </div>
                                             </div>
@@ -189,7 +189,7 @@ function ThekedarDashboard() {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                                     <h3>{t('my_team')}</h3>
                                     <button className='btn btn-accent' onClick={() => setShowAddWorker(!showAddWorker)}>
-                                        <Users size={18} /> Add New Worker
+                                        <Users size={18} /> {t('add_new_worker')}
                                     </button>
                                 </div>
 
@@ -197,21 +197,21 @@ function ThekedarDashboard() {
                                     <motion.div
                                         initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
                                         className='card' style={{ background: '#f0f9ff', padding: '20px', marginBottom: '20px', border: '1px solid #bae6fd' }}>
-                                        <h4 style={{ marginBottom: '15px' }}>🆕 Create Worker Account</h4>
+                                        <h4 style={{ marginBottom: '15px' }}>{t('create_worker_account')}</h4>
                                         <form onSubmit={handleAssistedRegister} style={{ display: 'grid', gap: '15px' }}>
-                                            <input className="form-control" required placeholder="Full Name"
+                                            <input className="form-control" required placeholder={t('full_name')}
                                                 value={newWorker.name} onChange={e => setNewWorker({ ...newWorker, name: e.target.value })} />
-                                            <input className="form-control" required placeholder="Mobile Number"
+                                            <input className="form-control" required placeholder={t('mobile')}
                                                 value={newWorker.mobile} onChange={e => setNewWorker({ ...newWorker, mobile: e.target.value })} />
-                                            <input className="form-control" required placeholder="Set PIN (Default: 1234)"
+                                            <input className="form-control" required placeholder={t('set_pin')}
                                                 value={newWorker.pin} onChange={e => setNewWorker({ ...newWorker, pin: e.target.value })} />
-                                            <button type="submit" className="btn btn-primary">Create Account</button>
+                                            <button type="submit" className="btn btn-primary">{t('create_account_btn')}</button>
                                         </form>
                                     </motion.div>
                                 )}
 
                                 <div className='worker-list'>
-                                    {myWorkers.length === 0 && <p className="text-center text-muted">No workers yet.</p>}
+                                    {myWorkers.length === 0 && <p className="text-center text-muted">{t('no_workers_yet')}</p>}
                                     {myWorkers.map((worker) => (
                                         <div key={worker._id} style={{ padding: '15px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center' }}>
                                             <div style={{ width: '45px', height: '45px', borderRadius: '50%', background: 'linear-gradient(135deg, #e2e8f0, #cbd5e1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '15px', fontSize: '1.2rem' }}>
@@ -221,7 +221,7 @@ function ThekedarDashboard() {
                                                 <div style={{ fontWeight: '600' }}>{worker.name}</div>
                                                 <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{worker.mobile} • {worker.skills.join(', ')}</div>
                                             </div>
-                                            <span className='badge badge-success' style={{ marginLeft: 'auto' }}>Active</span>
+                                            <span className='badge badge-success' style={{ marginLeft: 'auto' }}>{t('active')}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -232,19 +232,19 @@ function ThekedarDashboard() {
                         {activeTab === 'wallet' && (
                             <div className="glass-card text-center" style={{ padding: '60px' }}>
                                 <Wallet size={50} color="var(--color-primary)" style={{ marginBottom: '20px' }} />
-                                <h3>Manage Business Wallet</h3>
-                                <p className="text-muted">View payments, credits, and withdrawals for your team.</p>
-                                <button className="btn btn-primary" onClick={() => navigate('/wallet')}>Open Full Wallet</button>
+                                <h3>{t('manage_business_wallet')}</h3>
+                                <p className="text-muted">{t('view_payments')}</p>
+                                <button className="btn btn-primary" onClick={() => navigate('/wallet')}>{t('open_full_wallet')}</button>
                             </div>
                         )}
                         {activeTab === 'attendance' && (
                             <div className="glass-card" style={{ padding: '30px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                                    <h3>📑 Team Attendance Overview</h3>
-                                    <button className="btn btn-outline btn-sm" onClick={() => fetchMyWorkers()}>Refresh</button>
+                                    <h3>{t('team_attendance')}</h3>
+                                    <button className="btn btn-outline btn-sm" onClick={() => fetchMyWorkers()}>{t('refresh')}</button>
                                 </div>
                                 <div className='worker-list'>
-                                    {myWorkers.length === 0 && <p className="text-center text-muted">No workers found.</p>}
+                                    {myWorkers.length === 0 && <p className="text-center text-muted">{t('no_workers_yet')}</p>}
                                     {myWorkers.map((worker) => (
                                         <div key={worker._id} style={{ padding: '15px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center' }}>
                                             <div style={{ width: '45px', height: '45px', borderRadius: '50%', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '15px' }}>
@@ -252,9 +252,9 @@ function ThekedarDashboard() {
                                             </div>
                                             <div style={{ flex: 1 }}>
                                                 <div style={{ fontWeight: '600' }}>{worker.name}</div>
-                                                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>Status: <span style={{ color: '#22c55e' }}>Present Today</span></div>
+                                                <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{t('status')}: <span style={{ color: '#22c55e' }}>{t('present_today')}</span></div>
                                             </div>
-                                            <button className="btn btn-sm" style={{ background: '#e0f2fe', color: '#0369a1' }}>View History</button>
+                                            <button className="btn btn-sm" style={{ background: '#e0f2fe', color: '#0369a1' }}>{t('view_history')}</button>
                                         </div>
                                     ))}
                                 </div>
@@ -318,9 +318,9 @@ function SitesTab({ t, user }) {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h3>🏗️ My Construction Sites</h3>
+                <h3>{t('my_construction_sites')}</h3>
                 <button className='btn btn-primary' onClick={() => setShowForm(!showForm)}>
-                    {showForm ? 'Cancel' : '➕ New Site'}
+                    {showForm ? t('cancel') : t('new_site')}
                 </button>
             </div>
 
@@ -329,15 +329,15 @@ function SitesTab({ t, user }) {
                     <motion.div
                         initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
                         className='glass-card' style={{ marginBottom: '20px', border: '1px solid var(--color-primary-light)' }}>
-                        <h4 style={{ marginBottom: '15px' }}>Add New Site</h4>
+                        <h4 style={{ marginBottom: '15px' }}>{t('add_new_site')}</h4>
                         <form onSubmit={handleCreateSite} style={{ display: 'grid', gap: '15px' }}>
                             <input className='form-control' required
                                 value={newSite.name} onChange={e => setNewSite({ ...newSite, name: e.target.value })}
-                                placeholder="Site Name (e.g. Sector 45 Mall)" />
+                                placeholder={t('site_name_placeholder')} />
                             <input className='form-control' required
                                 value={newSite.address} onChange={e => setNewSite({ ...newSite, address: e.target.value })}
-                                placeholder="Site Address" />
-                            <button className='btn btn-success'>Save Site</button>
+                                placeholder={t('site_address')} />
+                            <button className='btn btn-success'>{t('save_site')}</button>
                         </form>
                     </motion.div>
                 )}
@@ -349,13 +349,13 @@ function SitesTab({ t, user }) {
                         <div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                                 <h4 style={{ margin: 0 }}>{site.name}</h4>
-                                <span className='badge badge-info'>{site.workers.length} Staff</span>
+                                <span className='badge badge-info'>{site.workers.length} {t('staff')}</span>
                             </div>
                             <p className='text-muted' style={{ fontSize: '0.9rem' }}>📍 {site.address}</p>
 
                             <div style={{ margin: '15px 0' }}>
-                                <strong style={{ fontSize: '0.85rem', color: '#64748b' }}>Team On-Site:</strong>
-                                {site.workers.length === 0 ? <div style={{ color: '#999', fontSize: '0.85rem' }}>No workers assigned</div> : (
+                                <strong style={{ fontSize: '0.85rem', color: '#64748b' }}>{t('team_on_site')}</strong>
+                                {site.workers.length === 0 ? <div style={{ color: '#999', fontSize: '0.85rem' }}>{t('no_workers_assigned')}</div> : (
                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '5px' }}>
                                         {site.workers.map(w => (
                                             <span key={w._id} className='badge' style={{ background: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0' }}>
@@ -368,12 +368,12 @@ function SitesTab({ t, user }) {
                         </div>
 
                         <button className='btn btn-outline' style={{ width: '100%', marginTop: '10px' }} onClick={() => openAssignModal(site._id)}>
-                            ➕ Assign Worker
+                            {t('assign_worker')}
                         </button>
                     </div>
                 ))}
             </div>
-            {sites.length === 0 && !showForm && <p className='text-center text-muted'>No sites added yet.</p>}
+            {sites.length === 0 && !showForm && <p className='text-center text-muted'>{t('no_sites_yet')}</p>}
 
             {/* Assign Worker Modal */}
             <AnimatePresence>
@@ -387,16 +387,16 @@ function SitesTab({ t, user }) {
                         <motion.div
                             initial={{ scale: 0.9 }} animate={{ scale: 1 }}
                             className='glass-card' style={{ width: '350px', background: 'white' }}>
-                            <h4 style={{ marginBottom: '15px' }}>Assign Worker to Site</h4>
+                            <h4 style={{ marginBottom: '15px' }}>{t('assign_worker_to_site')}</h4>
                             <select className='form-control' value={selectedWorker} onChange={e => setSelectedWorker(e.target.value)}>
-                                <option value="">Select a Worker...</option>
+                                <option value="">{t('select_worker')}</option>
                                 {workers.map(w => (
                                     <option key={w._id} value={w._id}>{w.name}</option>
                                 ))}
                             </select>
                             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                                <button className='btn btn-outline' style={{ border: 'none' }} onClick={() => setAssignModal({ show: false, siteId: null })}>Cancel</button>
-                                <button className='btn btn-success' onClick={handleAssignWorker}>Confirm Assignment</button>
+                                <button className='btn btn-outline' style={{ border: 'none' }} onClick={() => setAssignModal({ show: false, siteId: null })}>{t('cancel')}</button>
+                                <button className='btn btn-success' onClick={handleAssignWorker}>{t('confirm_assignment')}</button>
                             </div>
                         </motion.div>
                     </motion.div>

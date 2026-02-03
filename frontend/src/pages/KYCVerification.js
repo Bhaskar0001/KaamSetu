@@ -4,8 +4,10 @@ import api from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Camera, Upload, CheckCircle, ShieldCheck, UserCheck } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 function KYCVerification() {
+    const { t, language, changeLanguage } = useLanguage();
     const navigate = useNavigate();
     const webcamRef = useRef(null);
     const [step, setStep] = useState(1); // 1: Upload Aadhaar, 2: Selfie, 3: Processing
@@ -49,7 +51,7 @@ function KYCVerification() {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
-            toast.success('✅ KYC Verified Successfully!');
+            toast.success('✅ ' + t('kyc_verified'));
 
             // Update local user
             localStorage.setItem('user', JSON.stringify(res.data.data));
@@ -59,7 +61,7 @@ function KYCVerification() {
             }, 2000);
 
         } catch (err) {
-            toast.error(err.response?.data?.message || 'Verification Failed');
+            toast.error(err.response?.data?.message || t('verification_failed'));
             setStep(2); // Go back to retry
         } finally {
             setUploading(false);
@@ -68,11 +70,16 @@ function KYCVerification() {
 
     return (
         <div className="container" style={{ maxWidth: '600px', padding: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }}>
+                <button onClick={() => changeLanguage(language === 'en' ? 'hi' : 'en')} style={{ background: '#e2e8f0', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
+                    {language === 'en' ? '🇮🇳 HI' : '🇺🇸 EN'}
+                </button>
+            </div>
             <div className="glass-card" style={{ padding: '30px', textAlign: 'center' }}>
                 <ShieldCheck size={50} color="#0ea5e9" style={{ marginBottom: '20px' }} />
-                <h2 style={{ marginBottom: '10px' }}>Digital KYC Verification</h2>
+                <h2 style={{ marginBottom: '10px' }}>{t('digital_kyc')}</h2>
                 <p className="text-muted" style={{ marginBottom: '30px' }}>
-                    Verify your identity to access jobs. (अपनी पहचान सत्यापित करें)
+                    {t('verify_identity_desc')}
                 </p>
 
                 {/* Stepper */}
@@ -84,32 +91,32 @@ function KYCVerification() {
 
                 {step === 1 && (
                     <div className="animate-fade-in">
-                        <h4>Step 1: Upload Aadhaar Card (Front)</h4>
+                        <h4>{t('step1_upload_aadhaar')}</h4>
                         <div style={{ border: '2px dashed #cbd5e1', padding: '40px', borderRadius: '15px', marginTop: '20px', cursor: 'pointer', background: '#f8fafc' }} onClick={() => document.getElementById('aadhaarInput').click()}>
                             {aadhaarFile ? (
                                 <div>
                                     <CheckCircle size={40} color="#22c55e" style={{ margin: '0 auto 10px' }} />
                                     <p>{aadhaarFile.name}</p>
-                                    <p className="text-muted" style={{ fontSize: '0.8rem' }}>Click to change</p>
+                                    <p className="text-muted" style={{ fontSize: '0.8rem' }}>{t('click_to_change')}</p>
                                 </div>
                             ) : (
                                 <div>
                                     <Upload size={40} color="#64748b" style={{ margin: '0 auto 10px' }} />
-                                    <p>Tap to Upload Card Photo</p>
+                                    <p>{t('tap_to_upload')}</p>
                                 </div>
                             )}
                             <input id="aadhaarInput" type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
                         </div>
                         <button className="btn btn-primary btn-block" style={{ marginTop: '20px' }} disabled={!aadhaarFile} onClick={() => setStep(2)}>
-                            Next <UserCheck size={18} style={{ marginLeft: '8px' }} />
+                            {t('next')} <UserCheck size={18} style={{ marginLeft: '8px' }} />
                         </button>
                     </div>
                 )}
 
                 {step === 2 && (
                     <div className="animate-fade-in">
-                        <h4>Step 2: Take a Selfie (Live)</h4>
-                        <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '15px' }}>Make sure your face is clearly visible.</p>
+                        <h4>{t('step2_take_selfie')}</h4>
+                        <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '15px' }}>{t('face_clearly_visible')}</p>
 
                         <div style={{ borderRadius: '15px', overflow: 'hidden', marginBottom: '20px', border: '4px solid white', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
                             {!selfieImg ? (
@@ -131,8 +138,8 @@ function KYCVerification() {
                             </button>
                         ) : (
                             <div style={{ display: 'flex', gap: '10px' }}>
-                                <button className="btn" style={{ flex: 1, background: '#e2e8f0', color: '#475569' }} onClick={() => setSelfieImg(null)}>Retake</button>
-                                <button className="btn btn-primary" style={{ flex: 1 }} onClick={handleSubmit}>Verify Now ✨</button>
+                                <button className="btn" style={{ flex: 1, background: '#e2e8f0', color: '#475569' }} onClick={() => setSelfieImg(null)}>{t('retake')}</button>
+                                <button className="btn btn-primary" style={{ flex: 1 }} onClick={handleSubmit}>{t('verify_now')}</button>
                             </div>
                         )}
                     </div>
@@ -141,9 +148,9 @@ function KYCVerification() {
                 {step === 3 && (
                     <div className="animate-fade-in" style={{ padding: '40px 0' }}>
                         <div className="spinner" style={{ margin: '0 auto 20px' }}></div>
-                        <h3>Verifying Identity...</h3>
-                        <p className="text-muted">Matching Face with Aadhaar Card (AI)</p>
-                        <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '10px' }}>This may take a few seconds...</p>
+                        <h3>{t('verifying_identity')}</h3>
+                        <p className="text-muted">{t('matching_face')}</p>
+                        <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '10px' }}>{t('few_seconds')}</p>
                     </div>
                 )}
             </div>

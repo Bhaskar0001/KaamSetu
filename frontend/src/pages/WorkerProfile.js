@@ -4,8 +4,10 @@ import api from '../utils/api';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Camera, Save } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 function WorkerProfile() {
+    const { t, language, changeLanguage } = useLanguage();
     const navigate = useNavigate();
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(false);
@@ -57,7 +59,10 @@ function WorkerProfile() {
                 <button onClick={() => navigate(-1)} style={{ background: 'white', border: 'none', padding: '10px', borderRadius: '12px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', cursor: 'pointer' }}>
                     <ArrowLeft size={24} color='#334155' />
                 </button>
-                <h2 style={{ margin: 0, color: '#1e293b' }}>Complete Profile</h2>
+                <h2 style={{ margin: 0, color: '#1e293b' }}>{t('complete_profile')}</h2>
+                <button onClick={() => changeLanguage(language === 'en' ? 'hi' : 'en')} style={{ marginLeft: 'auto', background: '#e2e8f0', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
+                    {language === 'en' ? '🇮🇳 HI' : '🇺🇸 EN'}
+                </button>
             </div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className='glass-card'>
@@ -79,25 +84,25 @@ function WorkerProfile() {
                                 <Camera size={20} color='white' />
                             </div>
                         </div>
-                        <p className='text-muted'>Tap to change photo</p>
+                        <p className='text-muted'>{t('tap_to_change_photo')}</p>
                     </div>
 
                     <div className='form-group'>
-                        <label>Your Skills (कौशल)</label>
+                        <label>{t('your_skills')}</label>
                         <input
                             type='text'
                             className='form-control'
                             value={skills}
                             onChange={e => setSkills(e.target.value)}
-                            placeholder='Painter, Carpenter, Driver...'
+                            placeholder={t('skills_placeholder')}
                             style={{ height: '50px', fontSize: '1.1rem' }}
                             required
                         />
-                        <small className='text-muted'>Comma separated values</small>
+                        <small className='text-muted'>{t('comma_separated')}</small>
                     </div>
 
                     <div className='form-group'>
-                        <label>Experience (Years) (अनुभव)</label>
+                        <label>{t('experience_years')}</label>
                         <input
                             type='number'
                             className='form-control'
@@ -115,7 +120,7 @@ function WorkerProfile() {
                         disabled={loading}
                         style={{ marginTop: '20px', padding: '15px', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
                     >
-                        {loading ? 'Saving...' : <><Save size={24} /> Save Profile</>}
+                        {loading ? t('saving') : <><Save size={24} /> {t('save_profile')}</>}
                     </button>
                 </form>
             </motion.div>

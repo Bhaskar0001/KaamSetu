@@ -82,11 +82,11 @@ function CreateJob() {
                         {/* Job Details Section */}
                         <div style={{ marginBottom: '25px' }}>
                             <h3 style={{ fontSize: '1.2rem', color: '#334155', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <Briefcase size={20} color='var(--color-primary)' /> Job Details (कार्य विवरण)
+                                <Briefcase size={20} color='var(--color-primary)' /> {t('job_details')}
                             </h3>
 
                             <div className='form-group'>
-                                <label style={{ fontWeight: 600 }}>Job Title (काम का नाम)</label>
+                                <label style={{ fontWeight: 600 }}>{t('job_title')}</label>
                                 <input
                                     type='text'
                                     className='form-control'
@@ -100,7 +100,7 @@ function CreateJob() {
                             </div>
 
                             <div className='form-group'>
-                                <label style={{ fontWeight: 600 }}>Description (विवरण)</label>
+                                <label style={{ fontWeight: 600 }}>{t('description')}</label>
                                 <textarea
                                     className='form-control'
                                     name='description'
@@ -108,7 +108,7 @@ function CreateJob() {
                                     onChange={onChange}
                                     required
                                     rows={3}
-                                    placeholder='Describe the work...'
+                                    placeholder={t('describe_work')}
                                     style={{ fontSize: '1rem', padding: '12px' }}
                                 />
                             </div>
@@ -117,18 +117,18 @@ function CreateJob() {
                         {/* Payment & Type Section */}
                         <div style={{ marginBottom: '25px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                             <div className='form-group'>
-                                <label style={{ fontWeight: 600 }}>Job Type (भर्ती प्रकार)</label>
+                                <label style={{ fontWeight: 600 }}>{t('job_type')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <Layout size={18} style={{ position: 'absolute', left: '12px', top: '14px', color: '#94a3b8' }} />
                                     <select className='form-control' name='jobType' value={jobType} onChange={onChange} style={{ paddingLeft: '40px', cursor: 'pointer' }}>
-                                        <option value='direct'>⚡ Direct Hire (सीधी भर्ती)</option>
-                                        <option value='bid'>🏷️ Bidding (बोली)</option>
-                                        <option value='contract'>📜 Contract (ठेका)</option>
+                                        <option value='direct'>{t('direct_hire')}</option>
+                                        <option value='bid'>{t('bidding')}</option>
+                                        <option value='contract'>{t('contract_long')}</option>
                                     </select>
                                 </div>
                             </div>
                             <div className='form-group'>
-                                <label style={{ fontWeight: 600 }}>Wage/Budget (दीहाड़ी ₹)</label>
+                                <label style={{ fontWeight: 600 }}>{t('wage_budget')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <span style={{ position: 'absolute', left: '15px', top: '12px', fontWeight: 'bold', color: '#94a3b8' }}>₹</span>
                                     <input
@@ -148,7 +148,7 @@ function CreateJob() {
                         {/* Location & Skills */}
                         <div style={{ marginBottom: '25px' }}>
                             <div className='form-group'>
-                                <label style={{ fontWeight: 600 }}>Location (काम का पता)</label>
+                                <label style={{ fontWeight: 600 }}>{t('location_address')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <MapPin size={18} style={{ position: 'absolute', left: '12px', top: '14px', color: '#94a3b8' }} />
                                     <input
@@ -158,26 +158,26 @@ function CreateJob() {
                                         value={address}
                                         onChange={onChange}
                                         required
-                                        placeholder='Full Address (पूरा पता)'
+                                        placeholder={t('address_placeholder')}
                                         style={{ paddingLeft: '40px' }}
                                     />
                                 </div>
                             </div>
 
                             <div className='form-group'>
-                                <label style={{ fontWeight: 600 }}>Skills (आवश्यक कौशल)</label>
+                                <label style={{ fontWeight: 600 }}>{t('skills_required')}</label>
                                 <input
                                     type='text'
                                     className='form-control'
                                     name='requiredSkills'
                                     value={requiredSkills}
                                     onChange={onChange}
-                                    placeholder='e.g. Mason, Helper, Painter (कॉमा लगाकर लिखें)'
+                                    placeholder={t('skills_placeholder')}
                                 />
                             </div>
 
                             <div className='form-group'>
-                                <label style={{ fontWeight: 600 }}>Date (तारीख)</label>
+                                <label style={{ fontWeight: 600 }}>{t('date')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <Calendar size={18} style={{ position: 'absolute', left: '12px', top: '14px', color: '#94a3b8' }} />
                                     <input
@@ -199,7 +199,7 @@ function CreateJob() {
                             disabled={loading}
                             style={{ fontSize: '1.2rem', padding: '15px' }}
                         >
-                            {loading ? 'Posting...' : <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>🚀 {t('post_job_btn')}</span>}
+                            {loading ? t('posting') : <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>🚀 {t('post_job_btn')}</span>}
                         </button>
                     </form>
                 </div>

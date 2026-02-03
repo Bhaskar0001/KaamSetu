@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../utils/api';
 import { toast } from 'react-toastify';
 import { useLanguage } from '../context/LanguageContext';
@@ -39,6 +39,9 @@ function Login() {
             const role = res.data.user.role;
             if (role === 'admin') navigate('/admin');
             else if (role === 'owner') navigate('/owner');
+            // Worker & Thekedar -> Today Screen (Engagement Hub)
+            else if (role === 'owner') navigate('/owner');
+            // Direct to Dashboards (Real World Flow)
             else if (role === 'thekedar') navigate('/thekedar');
             else navigate('/worker');
         } catch (err) {
@@ -83,7 +86,7 @@ function Login() {
                         <LogIn color='white' size={30} />
                     </div>
                     <h1 style={{ fontSize: '2rem', marginBottom: '5px' }}>{t('login')}</h1>
-                    <p className='text-muted'>Welcome back to Majdoor</p>
+                    <p className='text-muted'>{t('welcome_back')}</p>
                 </div>
 
                 {error && (
@@ -99,7 +102,7 @@ function Login() {
 
                 <form onSubmit={onSubmit}>
                     <div className='form-group' style={{ marginBottom: '20px' }}>
-                        <label className='text-muted' style={{ fontSize: '0.85rem' }}>Mobile Number</label>
+                        <label className='text-muted' style={{ fontSize: '0.85rem' }}>{t('mobile')}</label>
                         <div style={{ position: 'relative' }}>
                             <Phone size={18} style={{ position: 'absolute', left: '15px', top: '14px', color: '#94a3b8' }} />
                             <input
@@ -115,7 +118,7 @@ function Login() {
                         </div>
                     </div>
                     <div className='form-group' style={{ marginBottom: '30px' }}>
-                        <label className='text-muted' style={{ fontSize: '0.85rem' }}>PIN Code</label>
+                        <label className='text-muted' style={{ fontSize: '0.85rem' }}>{t('pin')}</label>
                         <div style={{ position: 'relative' }}>
                             <Lock size={18} style={{ position: 'absolute', left: '15px', top: '14px', color: '#94a3b8' }} />
                             <input
@@ -132,24 +135,24 @@ function Login() {
                         </div>
                     </div>
                     <button type='submit' className='btn btn-primary btn-block' disabled={isLoading} style={{ width: '100%', justifyContent: 'center', height: '50px' }}>
-                        {isLoading ? 'Verifying...' : <span style={{ display: 'flex', alignItems: 'center' }}>Login <ArrowRight size={18} style={{ marginLeft: '8px' }} /></span>}
+                        {isLoading ? t('loading') : <span style={{ display: 'flex', alignItems: 'center' }}>{t('login')} <ArrowRight size={18} style={{ marginLeft: '8px' }} /></span>}
                     </button>
                 </form>
 
                 <div style={{ marginTop: '25px', textAlign: 'center', fontSize: '0.9rem' }}>
                     <span className='text-muted'>{t('new_user')} </span>
-                    <a href='/register' style={{ color: 'var(--color-primary)', fontWeight: '600', textDecoration: 'none' }}>{t('register_here')}</a>
+                    <Link to='/register' style={{ color: 'var(--color-primary)', fontWeight: '600', textDecoration: 'none' }}>{t('register_here')}</Link>
                 </div>
 
                 <div style={{ marginTop: '40px', paddingTop: '20px', borderTop: '1px solid #e2e8f0' }}>
-                    <p style={{ fontSize: '0.75rem', color: '#94a3b8', textAlign: 'center', marginBottom: '10px' }}>DEMO CREDENTIALS</p>
+                    <p style={{ fontSize: '0.75rem', color: '#94a3b8', textAlign: 'center', marginBottom: '10px' }}>{t('demo_creds')}</p>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
                         <span className='badge' style={{ background: '#e0f2fe', color: '#0369a1', cursor: 'pointer' }}
-                            onClick={() => setFormData({ mobile: 'DEMO_WORKER', pin: '1234' })}>Worker</span>
+                            onClick={() => setFormData({ mobile: 'DEMO_WORKER', pin: '1234' })}>{t('worker')}</span>
                         <span className='badge' style={{ background: '#dcfce7', color: '#15803d', cursor: 'pointer' }}
-                            onClick={() => setFormData({ mobile: 'DEMO_OWNER', pin: '1234' })}>Owner</span>
+                            onClick={() => setFormData({ mobile: 'DEMO_OWNER', pin: '1234' })}>{t('owner')}</span>
                         <span className='badge' style={{ background: '#fef9c3', color: '#a16207', cursor: 'pointer' }}
-                            onClick={() => setFormData({ mobile: 'DEMO_THEKEDAR', pin: '1234' })}>Thekedar</span>
+                            onClick={() => setFormData({ mobile: 'DEMO_THEKEDAR', pin: '1234' })}>{t('thekedar_role')}</span>
                     </div>
                 </div>
             </motion.div>

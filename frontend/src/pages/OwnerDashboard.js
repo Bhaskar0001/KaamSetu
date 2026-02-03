@@ -94,8 +94,8 @@ function OwnerDashboard() {
             <div className='premium-header' style={{ background: 'linear-gradient(135deg, #166534 0%, #15803d 100%)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
-                        <h2 style={{ color: 'white', marginBottom: '4px' }}>Hello, {user?.name || 'Owner'}</h2>
-                        <span style={{ opacity: 0.8, fontSize: '0.9rem' }}>Manage your projects & hiring</span>
+                        <h2 style={{ color: 'white', marginBottom: '4px' }}>{t('hello')}, {user?.name || t('owner')}</h2>
+                        <span style={{ opacity: 0.8, fontSize: '0.9rem' }}>{t('manage_projects')}</span>
                     </div>
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <button onClick={toggleLang} className='btn' style={{ background: 'rgba(255,255,255,0.2)', color: 'white', padding: '8px 12px' }}>
@@ -119,7 +119,7 @@ function OwnerDashboard() {
                         <CreditCard size={18} /> {t('wallet')}
                     </div>
                     <div className={`nav-pill ${activeTab === 'attendance' ? 'active' : ''}`} style={{ background: activeTab === 'attendance' ? 'white' : 'rgba(255,255,255,0.15)', color: activeTab === 'attendance' ? '#15803d' : 'white', display: 'flex', gap: '8px', alignItems: 'center', cursor: 'pointer' }} onClick={() => setActiveTab('attendance')}>
-                        <LayoutList size={18} /> Attendance
+                        <LayoutList size={18} /> {t('attendance')}
                     </div>
                 </div>
             </div>
@@ -130,15 +130,15 @@ function OwnerDashboard() {
                     <div className='grid-cards' style={{ marginBottom: '30px' }}>
                         <div className='glass-card text-center'>
                             <h1 style={{ color: '#15803d', fontSize: '2.5rem' }}>{jobs.length}</h1>
-                            <p className='text-muted'>Total Jobs</p>
+                            <p className='text-muted'>{t('total_jobs')}</p>
                         </div>
                         <div className='glass-card text-center'>
                             <h1 style={{ color: 'var(--color-accent)', fontSize: '2.5rem' }}>{jobs.filter(j => j.status === 'open').length}</h1>
-                            <p className='text-muted'>Open for Bidding</p>
+                            <p className='text-muted'>{t('open_for_bidding')}</p>
                         </div>
                         <div className='glass-card text-center'>
                             <h1 style={{ color: 'var(--color-primary)', fontSize: '2.5rem' }}>{jobs.filter(j => j.status === 'assigned').length}</h1>
-                            <p className='text-muted'>Active Contracts</p>
+                            <p className='text-muted'>{t('active_contracts')}</p>
                         </div>
                     </div>
                 )}
@@ -146,11 +146,11 @@ function OwnerDashboard() {
                 {/* Content Sections */}
                 {activeTab === 'jobs' ? (
                     <>
-                        <h3 style={{ marginBottom: '15px' }}>📋 Recent Postings</h3>
+                        <h3 style={{ marginBottom: '15px' }}>{t('recent_postings')}</h3>
                         {loading ? <Skeleton height="150px" count={2} /> : jobs.length === 0 ? (
                             <div className='glass-card text-center'>
-                                <p className='text-muted'>You haven't posted any jobs yet.</p>
-                                <button className='btn btn-success' onClick={() => navigate('/create-job')}>Post First Job</button>
+                                <p className='text-muted'>{t('no_jobs_posted')}</p>
+                                <button className='btn btn-success' onClick={() => navigate('/create-job')}>{t('post_first_job')}</button>
                             </div>
                         ) : (
                             <div className='grid-cards'>
@@ -174,12 +174,12 @@ function OwnerDashboard() {
                                         <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '15px', display: 'flex', gap: '10px' }}>
                                             {job.status === 'open' && (
                                                 <button className='btn btn-outline btn-sm' style={{ flex: 1 }} onClick={() => openBidModal(job)}>
-                                                    👀 View Bids
+                                                    👀 {t('view_bids')}
                                                 </button>
                                             )}
                                             {job.status === 'assigned' && (
                                                 <button className='btn btn-primary btn-sm' style={{ flex: 1 }}>
-                                                    View Contract
+                                                    {t('view_contract')}
                                                 </button>
                                             )}
                                         </div>
@@ -190,11 +190,57 @@ function OwnerDashboard() {
                     </>
                 ) : (
                     <div className="glass-card">
-                        <h3 style={{ marginBottom: '20px' }}>📋 Site Attendance (Your Projects)</h3>
-                        <div className="text-center text-muted" style={{ padding: '40px' }}>
-                            <div style={{ fontSize: '3rem', marginBottom: '10px' }}>📡</div>
-                            <p>Connect with a Thekedar to see live worker attendance on your sites.</p>
-                            <button className="btn btn-outline" onClick={() => setActiveTab('jobs')}>View Active Jobs</button>
+                        <h3 style={{ marginBottom: '20px' }}>{t('site_attendance')} <span className="badge badge-premium" style={{ fontSize: '0.7rem', verticalAlign: 'middle', marginLeft: '10px' }}>DEMO VIEW</span></h3>
+
+                        <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', marginBottom: '20px', border: '1px solid #e2e8f0' }}>
+                            <p style={{ margin: 0, fontSize: '0.9rem', color: '#64748b' }}>
+                                ℹ️ This is how your attendance dashboard will look when you have active contracts.
+                            </p>
+                        </div>
+
+                        <div className="table-responsive">
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr style={{ borderBottom: '2px solid #e2e8f0', textAlign: 'left', color: '#64748b', fontSize: '0.9rem' }}>
+                                        <th style={{ padding: '15px' }}>Worker</th>
+                                        <th style={{ padding: '15px' }}>Status</th>
+                                        <th style={{ padding: '15px' }}>Check-In</th>
+                                        <th style={{ padding: '15px' }}>Location</th>
+                                        <th style={{ padding: '15px' }}>Selfie</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {[
+                                        { name: 'Ramesh Kumar', role: 'Mason', status: 'Present', time: '08:30 AM', loc: 'Sector 62 Site', img: 'https://randomuser.me/api/portraits/men/32.jpg' },
+                                        { name: 'Suresh Singh', role: 'Helper', status: 'Present', time: '08:45 AM', loc: 'Sector 62 Site', img: 'https://randomuser.me/api/portraits/men/45.jpg' },
+                                        { name: 'Amit Verma', role: 'Painter', status: 'Late', time: '09:15 AM', loc: 'Main Gate', img: 'https://randomuser.me/api/portraits/men/22.jpg' },
+                                        { name: 'Rahul Sharma', role: 'Electrician', status: 'On Leave', time: '-', loc: '-', img: 'https://randomuser.me/api/portraits/men/11.jpg' }
+                                    ].map((worker, i) => (
+                                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', background: 'white' }}>
+                                            <td style={{ padding: '15px' }}>
+                                                <div style={{ fontWeight: 'bold', color: '#1e293b' }}>{worker.name}</div>
+                                                <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>{worker.role}</div>
+                                            </td>
+                                            <td style={{ padding: '15px' }}>
+                                                <span style={{
+                                                    padding: '4px 10px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold',
+                                                    background: worker.status === 'Present' ? '#dcfce7' : worker.status === 'Late' ? '#fef9c3' : '#fee2e2',
+                                                    color: worker.status === 'Present' ? '#166534' : worker.status === 'Late' ? '#854d0e' : '#991b1b'
+                                                }}>
+                                                    {worker.status}
+                                                </span>
+                                            </td>
+                                            <td style={{ padding: '15px', color: '#334155' }}>{worker.time}</td>
+                                            <td style={{ padding: '15px', color: '#334155' }}>📍 {worker.loc}</td>
+                                            <td style={{ padding: '15px' }}>
+                                                {worker.img.includes('http') ? (
+                                                    <img src={worker.img} alt="Selfie" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+                                                ) : <div style={{ width: '40px', height: '40px', background: '#e2e8f0', borderRadius: '50%' }}></div>}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 )}
@@ -210,12 +256,12 @@ function OwnerDashboard() {
                             initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
                             className="glass-card" style={{ width: '100%', maxWidth: '600px', maxHeight: '85vh', overflowY: 'auto', background: 'white' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee', paddingBottom: '15px', marginBottom: '15px' }}>
-                                <h3>Bids for {selectedJob.title}</h3>
+                                <h3>{t('bids_for')} {selectedJob.title}</h3>
                                 <button style={{ border: 'none', background: 'none', fontSize: '1.5rem', cursor: 'pointer' }} onClick={closeBidModal}>×</button>
                             </div>
 
                             {bidLoading ? <Skeleton height="60px" count={3} /> : bids.length === 0 ? (
-                                <p className='text-muted text-center'>No bids received yet.</p>
+                                <p className='text-muted text-center'>{t('no_bids_yet')}</p>
                             ) : (
                                 bids.map(bid => (
                                     <div key={bid._id} style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '15px', marginBottom: '10px', background: bid.status.includes('accept') ? '#f0fdf4' : 'white' }}>
@@ -245,8 +291,8 @@ function OwnerDashboard() {
                                                     className='form-control'
                                                     style={{ padding: '6px 10px', width: '120px' }}
                                                 />
-                                                <button className='btn btn-sm btn-outline' onClick={() => sendCounterOffer(bid._id)}>Counter</button>
-                                                <button className='btn btn-sm btn-success' onClick={() => acceptBid(bid._id)}>Accept</button>
+                                                <button className='btn btn-sm btn-outline' onClick={() => sendCounterOffer(bid._id)}>{t('counter')}</button>
+                                                <button className='btn btn-sm btn-success' onClick={() => acceptBid(bid._id)}>{t('accept')}</button>
                                             </div>
                                         )}
                                     </div>

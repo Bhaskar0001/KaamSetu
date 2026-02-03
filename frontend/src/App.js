@@ -17,11 +17,22 @@ import MarkAttendance from './pages/MarkAttendance';
 import WalletPage from './pages/WalletPage';
 import ContractPage from './pages/ContractPage';
 import KYCVerification from './pages/KYCVerification';
+import TodayScreen from './pages/TodayScreen';
+
+// Helper for safe parsing
+const getUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem('user') || '{}');
+  } catch (e) {
+    localStorage.removeItem('user');
+    return {};
+  }
+};
 
 // Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
   const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = getUser();
 
   if (!token) {
     return <Navigate to='/login' />;
@@ -36,14 +47,11 @@ function ProtectedRoute({ children, allowedRoles }) {
 
 // Home Redirect based on Role
 function HomeRedirect() {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const role = user.role;
-
-  if (role === 'admin') return <Navigate to='/admin' />;
-  if (role === 'owner') return <Navigate to='/owner' />;
-  if (role === 'thekedar') return <Navigate to='/thekedar' />;
-  if (role === 'worker') return <Navigate to='/worker' />;
-
+  const user = getUser();
+  if (user.role === 'admin') return <Navigate to='/admin' />;
+  if (user.role === 'worker') return <Navigate to='/worker' />;
+  if (user.role === 'thekedar') return <Navigate to='/thekedar' />;
+  if (user.role === 'owner') return <Navigate to='/owner' />;
   return <Navigate to='/login' />;
 }
 
@@ -59,6 +67,13 @@ function App() {
 
           {/* Home Redirect */}
           <Route path='/' element={<HomeRedirect />} />
+
+          {/* New Today Screen */}
+          <Route path='/today' element={
+            <ProtectedRoute allowedRoles={['worker', 'thekedar']}>
+              <TodayScreen />
+            </ProtectedRoute>
+          } />
 
           {/* Worker Routes */}
           <Route path='/worker' element={

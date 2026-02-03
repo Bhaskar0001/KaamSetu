@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Wallet, ArrowUpRight, ArrowDownLeft, Clock, CreditCard, Shield, ArrowLeft } from 'lucide-react';
 
 function WalletPage() {
-    const { t } = useLanguage();
+    const { t, language, changeLanguage } = useLanguage();
     const navigate = useNavigate();
 
     // Dummy Data for Preview (as requested "add some dummy data")
@@ -55,7 +55,10 @@ function WalletPage() {
                 <button onClick={() => navigate(-1)} style={{ background: 'white', border: 'none', padding: '10px', borderRadius: '12px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', cursor: 'pointer' }}>
                     <ArrowLeft size={24} color='#334155' />
                 </button>
-                <h2 style={{ margin: 0, color: '#1e293b' }}>{t('wallet')} (Wallet)</h2>
+                <h2 style={{ margin: 0, color: '#1e293b' }}>{t('wallet')}</h2>
+                <button onClick={() => changeLanguage(language === 'en' ? 'hi' : 'en')} style={{ background: '#e2e8f0', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
+                    {language === 'en' ? '🇮🇳 HI' : '🇺🇸 EN'}
+                </button>
             </div>
 
             <div style={{ padding: '20px' }}>
@@ -63,7 +66,7 @@ function WalletPage() {
                 <div className="glass-card" style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: 'white', marginBottom: '25px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
                         <div>
-                            <p style={{ margin: 0, opacity: 0.7, fontSize: '0.9rem' }}>Total Balance</p>
+                            <p style={{ margin: 0, opacity: 0.7, fontSize: '0.9rem' }}>{t('total_balance')}</p>
                             <h1 style={{ margin: '5px 0', fontSize: '2.5rem' }}>₹{balance.toLocaleString()}</h1>
                         </div>
                         <div style={{ background: 'rgba(255,255,255,0.1)', padding: '8px', borderRadius: '12px' }}>
@@ -73,10 +76,10 @@ function WalletPage() {
 
                     <div style={{ display: 'flex', gap: '15px' }}>
                         <button className="btn" style={{ flex: 1, background: '#3b82f6', color: 'white', border: 'none' }} onClick={() => setShowAddMoney(true)}>
-                            <ArrowUpRight size={18} style={{ marginRight: '5px' }} /> Add Money
+                            <ArrowUpRight size={18} style={{ marginRight: '5px' }} /> {t('add_money')}
                         </button>
                         <button className="btn" style={{ flex: 1, background: 'rgba(255,255,255,0.1)', color: 'white', border: 'none' }}>
-                            <ArrowDownLeft size={18} style={{ marginRight: '5px' }} /> Withdraw
+                            <ArrowDownLeft size={18} style={{ marginRight: '5px' }} /> {t('withdraw')}
                         </button>
                     </div>
                 </div>
@@ -86,12 +89,12 @@ function WalletPage() {
                     <div className="glass-card" style={{ padding: '15px', textAlign: 'center', cursor: 'pointer' }}>
                         <CreditCard size={28} color="#0ea5e9" style={{ marginBottom: '10px' }} />
                         <h4 style={{ margin: 0, fontSize: '1rem' }}>UPI ID</h4>
-                        <p className="text-muted" style={{ fontSize: '0.8rem' }}>Link Bank</p>
+                        <p className="text-muted" style={{ fontSize: '0.8rem' }}>{t('link_bank')}</p>
                     </div>
                     <div className="glass-card" style={{ padding: '15px', textAlign: 'center', cursor: 'pointer' }}>
                         <Clock size={28} color="#f59e0b" style={{ marginBottom: '10px' }} />
                         <h4 style={{ margin: 0, fontSize: '1rem' }}>{t('history')}</h4>
-                        <p className="text-muted" style={{ fontSize: '0.8rem' }}>View All</p>
+                        <p className="text-muted" style={{ fontSize: '0.8rem' }}>{t('view_all')}</p>
                     </div>
                 </div>
 
@@ -140,11 +143,11 @@ function WalletPage() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
                 }}>
                     <div className="glass-card" style={{ width: '90%', maxWidth: '400px', background: 'white', color: '#333' }}>
-                        <h3 style={{ marginBottom: '20px' }}>Add Money to Wallet</h3>
+                        <h3 style={{ marginBottom: '20px' }}>{t('add_money_to_wallet')}</h3>
 
                         {!processing ? (
                             <>
-                                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '10px' }}>Enter Amount (₹)</label>
+                                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '10px' }}>{t('enter_amount')}</label>
                                 <input
                                     type="number"
                                     className="form-control"
@@ -154,7 +157,7 @@ function WalletPage() {
                                     style={{ fontSize: '1.5rem', marginBottom: '20px' }}
                                 />
 
-                                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '10px' }}>Select Payment Method</label>
+                                <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '10px' }}>{t('select_payment_method')}</label>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '20px' }}>
                                     <button className="btn btn-outline" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px' }}>
                                         <span style={{ fontSize: '1.5rem' }}>📱</span> UPI
@@ -165,15 +168,15 @@ function WalletPage() {
                                 </div>
 
                                 <div style={{ display: 'flex', gap: '10px' }}>
-                                    <button className="btn" style={{ flex: 1, background: '#e2e8f0' }} onClick={() => setShowAddMoney(false)}>Cancel</button>
-                                    <button className="btn btn-success" style={{ flex: 1 }} onClick={handlePayment}>Pay ₹{amountToAdd || 0}</button>
+                                    <button className="btn" style={{ flex: 1, background: '#e2e8f0' }} onClick={() => setShowAddMoney(false)}>{t('cancel')}</button>
+                                    <button className="btn btn-success" style={{ flex: 1 }} onClick={handlePayment}>{t('pay')} ₹{amountToAdd || 0}</button>
                                 </div>
                             </>
                         ) : (
                             <div style={{ textAlign: 'center', padding: '20px' }}>
                                 <div className="spinner" style={{ margin: '0 auto 20px' }}></div>
-                                <h4>Processing Secure Payment...</h4>
-                                <p className="text-muted">Connecting to Bank Gateway...</p>
+                                <h4>{t('processing_payment')}</h4>
+                                <p className="text-muted">{t('connecting_gateway')}</p>
                             </div>
                         )}
                     </div>

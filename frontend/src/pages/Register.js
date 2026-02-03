@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../utils/api'; // Use standardized API
+import { useNavigate, Link } from 'react-router-dom';
+import api from '../utils/api';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
-import { UserPlus, User, Phone, Briefcase, ArrowRight, ShieldCheck } from 'lucide-react';
+import { UserPlus, User, Phone, Briefcase, ArrowRight, ShieldCheck, Globe } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 function Register() {
+    const { t, language, changeLanguage } = useLanguage();
     const [formData, setFormData] = useState({
         name: '', mobile: '', pin: '', confirmPin: '', role: 'worker', aadhaarNumber: ''
     });
@@ -130,6 +132,8 @@ function Register() {
             const role = res.data.user.role;
             if (role === 'admin') navigate('/admin');
             else if (role === 'owner') navigate('/owner');
+            else if (role === 'owner') navigate('/owner');
+            else if (role === 'owner') navigate('/owner');
             else if (role === 'thekedar') navigate('/thekedar');
             else navigate('/worker');
 
@@ -164,6 +168,12 @@ function Register() {
                     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
                 }}
             >
+                <div style={{ position: 'absolute', top: '20px', right: '20px' }}>
+                    <button onClick={() => changeLanguage(language === 'en' ? 'hi' : 'en')} className='btn btn-sm' style={{ borderRadius: '20px', padding: '6px 12px', background: 'rgba(255,255,255,0.9)' }}>
+                        <Globe size={14} style={{ marginRight: '5px' }} /> {language === 'en' ? 'हिन्दी' : 'EN'}
+                    </button>
+                </div>
+
                 <div style={{ textAlign: 'center', marginBottom: '30px' }}>
                     <div style={{
                         width: '60px', height: '60px', background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
@@ -172,9 +182,8 @@ function Register() {
                     }}>
                         <UserPlus color='white' size={30} />
                     </div>
-                    <h1 style={{ fontSize: '2rem', fontWeight: '800', color: '#1e293b', marginBottom: '5px' }}>Create Account</h1>
-                    <p className='text-muted' style={{ fontSize: '1.1rem' }}>Join the Majdoor Community</p>
-                    <p style={{ fontSize: '0.9rem', color: '#64748b' }}>(मजदूर कम्युनिटी में शामिल हों)</p>
+                    <h1 style={{ fontSize: '2rem', fontWeight: '800', color: '#1e293b', marginBottom: '5px' }}>{t('create_account')}</h1>
+                    <p className='text-muted' style={{ fontSize: '1.1rem' }}>{t('join_community')}</p>
                 </div>
 
                 {error && (
@@ -189,7 +198,7 @@ function Register() {
 
                 <form onSubmit={onSubmit}>
                     <div className='form-group'>
-                        <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#334155' }}>Full Name (पूरा नाम)</label>
+                        <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#334155' }}>{t('full_name')}</label>
                         <div style={{ position: 'relative' }}>
                             <User size={20} style={{ position: 'absolute', left: '15px', top: '14px', color: '#94a3b8' }} />
                             <input
@@ -206,7 +215,7 @@ function Register() {
                     </div>
 
                     <div className='form-group'>
-                        <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#334155' }}>Mobile Number (मोबाइल)</label>
+                        <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#334155' }}>{t('mobile')}</label>
                         <div style={{ display: 'flex', gap: '10px' }}>
                             <div style={{ position: 'relative', flex: 1 }}>
                                 <Phone size={20} style={{ position: 'absolute', left: '15px', top: '14px', color: '#94a3b8' }} />
@@ -226,7 +235,7 @@ function Register() {
                             </div>
                             {!isMobileVerified && !otpSent && (
                                 <button type='button' className='btn' onClick={handleSendOtp} disabled={verifying.mobile} style={{ background: '#3b82f6', color: 'white', whiteSpace: 'nowrap' }}>
-                                    {verifying.mobile ? 'Sending...' : 'Get OTP'}
+                                    {verifying.mobile ? t('sending') : t('get_otp')}
                                 </button>
                             )}
                         </div>
@@ -234,21 +243,21 @@ function Register() {
                             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
                                 <input
                                     type='text'
-                                    placeholder='Enter OTP'
+                                    placeholder={t('enter_otp')}
                                     className='form-control'
                                     value={enteredOtp}
                                     onChange={(e) => setEnteredOtp(e.target.value)}
                                     maxLength={4}
                                     style={{ flex: 1, textAlign: 'center', letterSpacing: '2px' }}
                                 />
-                                <button type='button' className='btn btn-success' onClick={handleVerifyOtp}>Verify</button>
+                                <button type='button' className='btn btn-success' onClick={handleVerifyOtp}>{t('verify')}</button>
                             </motion.div>
                         )}
                         {receivedOtp && !isMobileVerified && <small className='text-muted' style={{ display: 'block', marginTop: '5px' }}>Test OTP: {receivedOtp}</small>}
                     </div>
 
                     <div className='form-group'>
-                        <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#334155' }}>Aadhaar Number (आधार संख्या)</label>
+                        <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#334155' }}>{t('aadhaar_number')}</label>
                         <div style={{ display: 'flex', gap: '10px' }}>
                             <div style={{ position: 'relative', flex: 1 }}>
                                 <ShieldCheck size={20} style={{ position: 'absolute', left: '15px', top: '14px', color: '#94a3b8' }} />
@@ -268,14 +277,14 @@ function Register() {
                             </div>
                             {!isAadhaarVerified && (
                                 <button type='button' className='btn' onClick={handleVerifyAadhaar} disabled={verifying.aadhaar} style={{ background: '#8b5cf6', color: 'white', whiteSpace: 'nowrap' }}>
-                                    {verifying.aadhaar ? 'Verifying...' : 'Verify'}
+                                    {verifying.aadhaar ? t('verifying') : t('verify')}
                                 </button>
                             )}
                         </div>
                     </div>
 
                     <div className='form-group'>
-                        <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#334155' }}>I am a... (आप कौन हैं?)</label>
+                        <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#334155' }}>{t('i_am_a')}</label>
                         <div style={{ position: 'relative' }}>
                             <Briefcase size={20} style={{ position: 'absolute', left: '15px', top: '14px', color: '#94a3b8' }} />
                             <select
@@ -285,16 +294,16 @@ function Register() {
                                 onChange={onChange}
                                 style={{ paddingLeft: '45px', fontSize: '1.1rem', height: '50px', cursor: 'pointer' }}
                             >
-                                <option value='worker'>👷 Worker (Looking for jobs)</option>
-                                <option value='thekedar'>🧱 Thekedar (Contractor)</option>
-                                <option value='owner'>🏢 Owner (Hiring)</option>
+                                <option value='worker'>{t('worker_option')}</option>
+                                <option value='thekedar'>{t('thekedar_option')}</option>
+                                <option value='owner'>{t('owner_option')}</option>
                             </select>
                         </div>
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                         <div className='form-group'>
-                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#334155' }}>PIN (पिन)</label>
+                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#334155' }}>{t('pin')}</label>
                             <input
                                 type='password'
                                 className='form-control'
@@ -308,7 +317,7 @@ function Register() {
                             />
                         </div>
                         <div className='form-group'>
-                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#334155' }}>Confirm (पुष्टि)</label>
+                            <label style={{ fontSize: '0.9rem', fontWeight: '600', color: '#334155' }}>{t('confirm_pin')}</label>
                             <input
                                 type='password'
                                 className='form-control'
@@ -329,13 +338,13 @@ function Register() {
                         disabled={isLoading}
                         style={{ marginTop: '20px', width: '100%', justifyContent: 'center', height: '55px', fontSize: '1.2rem' }}
                     >
-                        {isLoading ? 'Creating Account...' : <span style={{ display: 'flex', alignItems: 'center' }}>Register Now <ArrowRight size={20} style={{ marginLeft: '8px' }} /></span>}
+                        {isLoading ? t('creating_account') : <span style={{ display: 'flex', alignItems: 'center' }}>{t('register_now')} <ArrowRight size={20} style={{ marginLeft: '8px' }} /></span>}
                     </button>
                 </form>
 
                 <div style={{ marginTop: '25px', textAlign: 'center', fontSize: '1rem' }}>
-                    <span className='text-muted'>Already have an account? </span>
-                    <a href='/login' style={{ color: 'var(--color-success)', fontWeight: '700', textDecoration: 'none' }}>Login here</a>
+                    <span className='text-muted'>{t('already_have_account')} </span>
+                    <Link to='/login' style={{ color: 'var(--color-success)', fontWeight: '700', textDecoration: 'none' }}>{t('login_here')}</Link>
                 </div>
             </motion.div>
         </div>

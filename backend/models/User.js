@@ -80,6 +80,17 @@ const userSchema = new mongoose.Schema({
         faceMatchScore: { type: Number, default: 0 }, // 0-100 confidence
         verifiedAt: Date
     },
+    // Gamification & Engagement
+    badges: [{
+        type: { type: String, enum: ['TRUSTED', 'ON_TIME', 'VERIFIED_PRO'] },
+        awardedAt: { type: Date, default: Date.now }
+    }],
+    stats: {
+        streak: { type: Number, default: 0 },
+        onTimePct: { type: Number, default: 100 },
+        jobsCompleted: { type: Number, default: 0 }
+    },
+    lastActiveAt: Date,
     // Thekedar specific: Pool of workers
     myWorkers: [{
         type: mongoose.Schema.Types.ObjectId,

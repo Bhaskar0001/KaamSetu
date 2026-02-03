@@ -64,6 +64,7 @@ app.use('/api/v5', require('./routes/v5Routes'));
 app.use('/api/vault', require('./routes/vaultRoutes'));
 app.use('/api/bulk', require('./routes/bulkRoutes'));
 app.use('/api/payroll', require('./routes/payrollRoutes'));
+app.use('/api/engagement', require('./routes/engagementRoutes'));
 
 // Make uploads folder static (Already done above)
 // app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
