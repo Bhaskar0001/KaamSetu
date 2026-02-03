@@ -19,7 +19,7 @@ import ContractPage from './pages/ContractPage';
 import KYCVerification from './pages/KYCVerification';
 import TodayScreen from './pages/TodayScreen';
 
-// Helper for safe parsing
+// Safe JSON parse to prevent app crash on corrupted localstorage
 const getUser = () => {
   try {
     return JSON.parse(localStorage.getItem('user') || '{}');
@@ -29,7 +29,7 @@ const getUser = () => {
   }
 };
 
-// Protected Route Component
+// Wrapper for protected routes
 function ProtectedRoute({ children, allowedRoles }) {
   const token = localStorage.getItem('token');
   const user = getUser();
@@ -45,7 +45,7 @@ function ProtectedRoute({ children, allowedRoles }) {
   return children;
 }
 
-// Home Redirect based on Role
+// Redirect logic based on user role
 function HomeRedirect() {
   const user = getUser();
   if (user.role === 'admin') return <Navigate to='/admin' />;

@@ -136,7 +136,7 @@ flowchart TD
 
 ---
 
-# ⚙️ 3️⃣ AGENT-DECIDED TECH STACK
+# ⚙️ 3️⃣ CORE TECHNOLOGY STACK
 ## "Rationale for Production Choices"
 
 ### 🎨 Frontend: React 19 + Redux Toolkit
@@ -560,4 +560,4 @@ Today, the system is fully containerized with Docker and features a CI/CD pipeli
 3.  **BullMQ:** To handle notification broadcasting (SMS/Email) in the background so the API remains snappy.
 
 ---
-*Created by Antigravity Autonomous Agent | 2026*
+*CONFIDENTIAL - INTERNAL ENGINEERING DOCUMENT*

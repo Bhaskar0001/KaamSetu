@@ -9,7 +9,7 @@ const connectDB = require('./config/db');
 // Load env vars
 dotenv.config();
 
-// Connect to database
+// Connect to MongoDB
 connectDB();
 
 const app = express();
@@ -41,8 +41,8 @@ app.use(hpp());
 
 // Rate Limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 1000, // Limit each IP to 1000 requests per windowMs (High for dev, lower for prod)
+    windowMs: 15 * 60 * 1000,
+    max: 1000, // TODO: Lower this for production once we have real traffic data
 });
 app.use(limiter);
 
@@ -79,6 +79,6 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`SERVER RESTARTED WITH NO SANITIZE`);
+    console.log(`SERVER RESTARTED WITH NO SANITIZE`); // Debug log
     console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
